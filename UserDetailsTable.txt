@@ -1,0 +1,145 @@
+namespace VendorEcommerceProject.Models.UserDetailsTable
+{
+    public class CustomerDetails : BaseEntity
+    {
+        [Key]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [MaxLength(20)]
+        public string? PhoneNumber { get; set; }
+
+        public DateTime? DateOfBirth { get; set; }
+
+        [MaxLength(20)]
+        public string? Gender { get; set; }
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.UserDetailsTable
+{
+    public class Role : IdentityRole<long>
+    {
+        [MaxLength(500)]
+        public string? Description { get; set; }
+
+        public ICollection<UserRoleAssignment> UserRoles { get; set; } = new List<UserRoleAssignment>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.UserDetailsTable
+{
+    public class SuperAdminDetails : BaseEntity
+    {
+        [Key]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [MaxLength(2000)]
+        public string? Notes { get; set; }
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.UserDetailsTable
+{
+    public class UserAddress : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long UserAddressId { get; set; }
+
+        [Required]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [Required, MaxLength(1000)]
+        public string AddressLine1 { get; set; } = string.Empty;
+
+        [MaxLength(1000)]
+        public string? AddressLine2 { get; set; }
+
+        [Required, MaxLength(200)]
+        public string City { get; set; } = string.Empty;
+
+        [MaxLength(50)]
+        public string? PostalCode { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Country { get; set; } = string.Empty;
+
+        public bool IsDefault { get; set; } = false;
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.UserDetailsTable
+{
+    public class UserRoleAssignment
+    {
+        public long UserId { get; set; }
+        public Users User { get; set; } = null!;
+
+        public long RoleId { get; set; }
+        public Role Role { get; set; } = null!;
+    }
+}
+
+
+
+namespace VendorEcommerceProject.Models.UserDetailsTable
+{
+    public class Users : IdentityUser<long>
+    {
+        [Required, MaxLength(200)]
+        public string FullName { get; set; } = string.Empty;
+
+        public bool IsActive { get; set; } = true;
+
+        // Navigation
+        public ICollection<Cart> Carts { get; set; } = new List<Cart>();
+        public ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+        public ICollection<Orders> Orders { get; set; } = new List<Orders>();
+        public ICollection<UserAddress> Addresses { get; set; } = new List<UserAddress>();
+        public ICollection<UserRoleAssignment> UserRoles { get; set; } = new List<UserRoleAssignment>();
+        public ICollection<CustomersReview> CustomersReview { get; set; } = new List<CustomersReview>();
+        public ICollection<ProductsReview> VendorProductReviews { get; set; } = new List<ProductsReview>();
+        public ICollection<VendorReview> VendorReviews { get; set; } = new List<VendorReview>();
+
+        // One-to-One Profiles
+        public Vendor? VendorAccount { get; set; }
+        public CustomerDetails? CustomerDetails { get; set; }
+        public VendorDetails? VendorDetails { get; set; }
+        public SuperAdminDetails? SuperAdminDetails { get; set; }
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.UserDetailsTable
+{
+    public class VendorDetails : BaseEntity
+    {
+        [Key]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [MaxLength(200)]
+        public string? ShopName { get; set; }
+
+        [MaxLength(100)]
+        public string? BusinessRegNo { get; set; }
+
+        [MaxLength(100)]
+        public string? TaxId { get; set; }
+    }
+}

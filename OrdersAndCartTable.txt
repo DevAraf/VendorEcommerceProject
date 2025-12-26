@@ -1,0 +1,314 @@
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class Cart : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long CartId { get; set; }
+
+        public long? UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users? User { get; set; }
+
+        [MaxLength(250)]
+        public string? SessionId { get; set; }
+
+        public ICollection<CartItem> Items { get; set; } = new List<CartItem>();
+    }
+}
+
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class CartItem : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long CartItemId { get; set; }
+
+        [Required]
+        public long CartId { get; set; }
+
+        [ForeignKey(nameof(CartId))]
+        public Cart Cart { get; set; } = null!;
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        public Products Product { get; set; } = null!;
+
+        public long? ProductVariantId { get; set; }
+
+        [ForeignKey(nameof(ProductVariantId))]
+        public ProductVariant? Variant { get; set; }
+
+        [Range(1, int.MaxValue)]
+        public int Quantity { get; set; } = 1;
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class Coupon : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long CouponId { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Code { get; set; } = string.Empty;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Discount { get; set; }
+
+        [Required, MaxLength(20)]
+        public string Type { get; set; } = "fixed";
+
+        public DateTime ValidFrom { get; set; } = DateTime.UtcNow;
+        public DateTime ValidTo { get; set; } = DateTime.UtcNow.AddMonths(1);
+
+        [Range(0, int.MaxValue)]
+        public int UsageLimit { get; set; }
+
+        public ICollection<Orders> Orders { get; set; } = new List<Orders>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class OrderItem : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OrderItemId { get; set; }
+
+        [Required]
+        public long OrderId { get; set; }
+
+        [ForeignKey(nameof(OrderId))]
+        public Orders Order { get; set; } = null!;
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        public Products Product { get; set; } = null!;
+
+        public long? ProductVariantId { get; set; }
+
+        [ForeignKey(nameof(ProductVariantId))]
+        public ProductVariant? Variant { get; set; }
+
+        [Range(1, int.MaxValue)]
+        public int Quantity { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Price { get; set; }
+
+        public ICollection<OrderReturn> Returns { get; set; } = new List<OrderReturn>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class OrderRefund : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OrderRefundId { get; set; }
+
+        [Required]
+        public long OrderReturnId { get; set; }
+
+        [ForeignKey(nameof(OrderReturnId))]
+        public OrderReturn Return { get; set; } = null!;
+
+        [Required]
+        public long OrderRefundStatusId { get; set; }
+
+        [ForeignKey(nameof(OrderRefundStatusId))]
+        public OrderRefundStatus Status { get; set; } = null!;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class OrderRefundStatus : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OrderRefundStatusId { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        // Navigation
+        public ICollection<OrderRefund> Refunds { get; set; } = new List<OrderRefund>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class OrderReturn : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OrderReturnId { get; set; }
+
+        [Required]
+        public long OrderItemId { get; set; }
+
+        [ForeignKey(nameof(OrderItemId))]
+        public OrderItem OrderItem { get; set; } = null!;
+
+        [Required]
+        public long OrderReturnStatusId { get; set; }
+
+        [ForeignKey(nameof(OrderReturnStatusId))]
+        public OrderReturnStatus Status { get; set; } = null!;
+
+        [Required, MaxLength(2000)]
+        public string Reason { get; set; } = string.Empty;
+
+        [Range(1, int.MaxValue)]
+        public int Quantity { get; set; } = 1;
+
+        public ICollection<OrderRefund> Refunds { get; set; } = new List<OrderRefund>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class OrderReturnStatus : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OrderReturnStatusId { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        public ICollection<OrderReturn> Returns { get; set; } = new List<OrderReturn>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class Orders : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OrderId { get; set; }
+
+        [Required]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [Required]
+        public long OrderStatusId { get; set; }
+
+        [ForeignKey(nameof(OrderStatusId))]
+        public OrderStatus Status { get; set; } = null!;
+
+        public long? ShippingAddressId { get; set; }
+
+        [ForeignKey(nameof(ShippingAddressId))]
+        public UserAddress? ShippingAddress { get; set; }
+
+        public long? CouponId { get; set; }
+
+        [ForeignKey(nameof(CouponId))]
+        public Coupon? Coupon { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal TotalAmount { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Tax { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal ShippingCost { get; set; }
+
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public ICollection<OrderShipment> Shipments { get; set; } = new List<OrderShipment>();
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public ICollection<Commission> Commissions { get; set; } = new List<Commission>();
+        public ICollection<VendorEarning> Earnings { get; set; } = new List<VendorEarning>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class OrderShipment : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OrderShipmentId { get; set; }
+
+        [Required]
+        public long OrderId { get; set; }
+
+        [ForeignKey(nameof(OrderId))]
+        public Orders Order { get; set; } = null!;
+
+        [Required]
+        public long OrderShipmentStatusId { get; set; }
+
+        [ForeignKey(nameof(OrderShipmentStatusId))]
+        public OrderShipmentStatus Status { get; set; } = null!;
+
+        [MaxLength(200)]
+        public string TrackingNumber { get; set; } = string.Empty;
+
+        [Required, MaxLength(100)]
+        public string Carrier { get; set; } = string.Empty;
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class OrderShipmentStatus : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OrderShipmentStatusId { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        public ICollection<OrderShipment> Shipments { get; set; } = new List<OrderShipment>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.OrdersAndCartTable
+{
+    public class OrderStatus : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long OrderStatusId { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        public ICollection<Orders> Orders { get; set; } = new List<Orders>();
+    }
+}

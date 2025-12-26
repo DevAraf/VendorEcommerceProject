@@ -1,0 +1,292 @@
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class CustomersReview : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long CustomersReviewId { get; set; }
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        public Products Product { get; set; } = null!;
+
+        [Required]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [Range(1, 5)]
+        public int Rating { get; set; }
+
+        [MaxLength(5000)]
+        public string Comment { get; set; } = string.Empty;
+
+        public ICollection<ReviewImage> Images { get; set; } = new List<ReviewImage>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class ProductAttribute : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ProductAttributeId { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        [MaxLength(500)]
+        public string? Description { get; set; }
+
+        public int SortOrder { get; set; } = 0;
+
+        public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class ProductCategory : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ProductCategoryId { get; set; }
+
+        public long? ParentId { get; set; }
+
+        [ForeignKey(nameof(ParentId))]
+        public ProductCategory? Parent { get; set; }
+
+        public ICollection<ProductCategory> Children { get; set; } = new List<ProductCategory>();
+
+        [Required, MaxLength(200)]
+        public string Name { get; set; } = string.Empty;
+
+        [MaxLength(200)]
+        public string? Slug { get; set; }
+
+        public ICollection<Products> Products { get; set; } = new List<Products>();
+    }
+
+}
+
+
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class Products : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ProductId { get; set; }
+
+        [Required]
+        public long VendorId { get; set; }
+
+        [ForeignKey(nameof(VendorId))]
+        public Vendor Vendor { get; set; } = null!;
+
+        [Required]
+        public long CategoryId { get; set; }
+
+        [ForeignKey(nameof(CategoryId))]
+        public ProductCategory Category { get; set; } = null!;
+
+        [Required]
+        public long ProductStatusId { get; set; }
+
+        [ForeignKey(nameof(ProductStatusId))]
+        public ProductStatus Status { get; set; } = null!;
+
+        [Required, MaxLength(200)]
+        [Column(TypeName = "nvarchar(200)")]
+        public string ProductsName { get; set; } = string.Empty;
+
+        [Column(TypeName = "nvarchar(max)")]
+        public string Description { get; set; } = string.Empty;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Price { get; set; }
+
+        [Range(0, int.MaxValue)]
+        public int Quantity { get; set; }
+
+        [Required, MaxLength(100)]
+        [Column(TypeName = "nvarchar(100)")]
+        public string Sku { get; set; } = string.Empty;
+
+        public ICollection<ProductsImages> ProductImages { get; set; } = new List<ProductsImages>();
+        public ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
+        public ICollection<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
+        public ICollection<CustomersReview> CustomerReviews { get; set; } = new List<CustomersReview>();
+        public ICollection<ProductsReview> ProductReviews { get; set; } = new List<ProductsReview>();
+        public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class ProductsImages : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ProductImageId { get; set; }
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        public Products Product { get; set; } = null!;
+
+        [Required, MaxLength(1000)]
+        public string ImageUrl { get; set; } = string.Empty;
+
+        [MaxLength(260)]
+        public string? FileName { get; set; }
+
+        [MaxLength(100)]
+        public string? ImageFileType { get; set; }
+
+        public long? FileSize { get; set; }
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class ProductsReview : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ProductsReviewId { get; set; }
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        public Products Product { get; set; } = null!;
+
+        [Required]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [MaxLength(5000)]
+        public string Comment { get; set; } = string.Empty;
+
+        [Range(1, 5)]
+        public int Rating { get; set; }
+
+        [Required]
+        public ReviewStatus Status { get; set; } = ReviewStatus.Pending;
+
+        [MaxLength(1000)]
+        public string? ImageUrl { get; set; }
+    }
+
+    public enum ReviewStatus
+    {
+        Pending = 0,
+        Approved = 1,
+        Rejected = 2
+    }
+
+}
+
+
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class ProductStatus : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ProductStatusId { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        [MaxLength(200)]
+        public string? DisplayName { get; set; }
+
+        public ICollection<Products> Products { get; set; } = new List<Products>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class ProductTag : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ProductTagId { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        public ICollection<Products> Products { get; set; } = new List<Products>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class ProductVariant : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ProductVariantId { get; set; }
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        public Products Product { get; set; } = null!;
+
+        [Required]
+        public long ProductAttributeId { get; set; }
+
+        [ForeignKey(nameof(ProductAttributeId))]
+        public ProductAttribute Attribute { get; set; } = null!;
+
+        [Required, MaxLength(200)]
+        public string Value { get; set; } = string.Empty;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal AdditionalPrice { get; set; }
+
+        [Range(0, int.MaxValue)]
+        public int Quantity { get; set; }
+
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.ProductsTables
+{
+    public class ReviewImage : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ReviewImageId { get; set; }
+
+        [Required]
+        public long ReviewId { get; set; }
+
+        [ForeignKey(nameof(ReviewId))]
+        public CustomersReview Review { get; set; } = null!;
+
+        [Required, MaxLength(1000)]
+        public string ImageUrl { get; set; } = string.Empty;
+    }
+}

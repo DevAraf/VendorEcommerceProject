@@ -1,0 +1,5 @@
+Parent: POST /api/admin/categories
+Body → { "name": "Electronics", "parentId": null }
+
+Child: POST /api/admin/categories
+Body → { "name": "Mobile Phones", "parentId": 1 }

@@ -1,0 +1,176 @@
+namespace VendorEcommerceProject.Models.VendorsTable
+{
+    public class Commission : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long CommissionId { get; set; }
+
+        [Required]
+        public long VendorId { get; set; }
+
+        [ForeignKey(nameof(VendorId))]
+        public Vendor Vendor { get; set; } = null!;
+
+        [Required]
+        public long OrderId { get; set; }
+
+        [ForeignKey(nameof(OrderId))]
+        public Orders Order { get; set; } = null!;
+
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.VendorsTable
+{
+    public class Vendor : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long VendorId { get; set; }
+
+        [Required]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [Required, MaxLength(200)]
+        [Column(TypeName = "nvarchar(200)")]
+        public string Name { get; set; } = string.Empty;
+
+        [MaxLength(2000)]
+        [Column(TypeName = "nvarchar(2000)")]
+        public string Description { get; set; } = string.Empty;
+
+        [MaxLength(1000)]
+        [Column(TypeName = "nvarchar(1000)")]
+        public string? ImageUrl { get; set; }
+
+        // Navigation
+        public ICollection<Products> Products { get; set; } = new List<Products>();
+        public ICollection<VendorEarning> Earnings { get; set; } = new List<VendorEarning>();
+        public ICollection<VendorPayment> Payouts { get; set; } = new List<VendorPayment>();
+        public ICollection<Commission> Commissions { get; set; } = new List<Commission>();
+        public ICollection<VendorReview> Reviews { get; set; } = new List<VendorReview>();
+        public ICollection<VendorSetting> Settings { get; set; } = new List<VendorSetting>();
+    }
+
+}
+
+
+namespace VendorEcommerceProject.Models.VendorsTable
+{
+    public class VendorEarning : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long VendorEarningId { get; set; }
+
+        [Required]
+        public long VendorId { get; set; }
+
+        [ForeignKey(nameof(VendorId))]
+        public Vendor Vendor { get; set; } = null!;
+
+        [Required]
+        public long OrderId { get; set; }
+
+        [ForeignKey(nameof(OrderId))]
+        public Orders Order { get; set; } = null!;
+
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
+
+        [Required, MaxLength(50)]
+        [Column(TypeName = "nvarchar(50)")]
+        public string Status { get; set; } = "pending";
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.VendorsTable
+{
+    public class VendorPayment : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long VendorPaymentId { get; set; }
+
+        [Required]
+        public long VendorId { get; set; }
+
+        [ForeignKey(nameof(VendorId))]
+        public Vendor Vendor { get; set; } = null!;
+
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
+
+        [Required]
+        public DateTime PaymentDate { get; set; } = DateTime.UtcNow;
+    }
+}
+
+
+
+namespace VendorEcommerceProject.Models.VendorsTable
+{
+    public class VendorReview : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long VendorReviewId { get; set; }
+
+        [Required]
+        public long VendorId { get; set; }
+
+        [ForeignKey(nameof(VendorId))]
+        public Vendor Vendor { get; set; } = null!;
+
+        [Required]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [Range(1, 5)]
+        public int Rating { get; set; }
+
+        [MaxLength(2000)]
+        public string Comment { get; set; } = string.Empty;
+
+        [MaxLength(1000)]
+        public string? ImageUrl { get; set; }
+    }
+}
+
+
+namespace VendorEcommerceProject.Models.VendorsTable
+{
+    public class VendorSetting : BaseEntity
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long VendorSettingId { get; set; }
+
+        [Required]
+        public long VendorId { get; set; }
+
+        [ForeignKey(nameof(VendorId))]
+        public Vendor Vendor { get; set; } = null!;
+
+        [Required, MaxLength(150)]
+        [Column(TypeName = "nvarchar(150)")]
+        public string Key { get; set; } = string.Empty;
+
+        [Required, MaxLength(2000)]
+        [Column(TypeName = "nvarchar(2000)")]
+        public string Value { get; set; } = string.Empty;
+    }
+}
