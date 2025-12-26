@@ -1,0 +1,42 @@
+namespace VendorEcommerceProject.Models
+{
+    public abstract class BaseEntity
+    {
+        [Column(TypeName = "datetime2")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        [Column(TypeName = "nvarchar(100)")]
+        public string? CreatedBy { get; set; }
+
+        [Column(TypeName = "datetime2")]
+        public DateTime? ModifiedAt { get; set; }
+
+        [Column(TypeName = "nvarchar(100)")]
+        public string? ModifiedBy { get; set; }
+
+        [Column(TypeName = "datetime2")]
+        public DateTime? DeletedAt { get; set; }
+
+        [Column(TypeName = "nvarchar(100)")]
+        public string? DeletedBy { get; set; }
+    }
+}
+
+
+namespace VendorEcommerceProject.Models
+{
+    public class Wishlist : BaseEntity
+    {
+        [Required]
+        public long UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public Users User { get; set; } = null!;
+
+        [Required]
+        public long ProductId { get; set; }
+
+        [ForeignKey(nameof(ProductId))]
+        public Products Product { get; set; } = null!;
+    }
+}
