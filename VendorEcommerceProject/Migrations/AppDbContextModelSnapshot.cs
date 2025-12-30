@@ -262,20 +262,16 @@ namespace VendorEcommerceProject.Migrations
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-=======
+
                     b.Property<int>("Type")
                         .HasColumnType("int");
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
-=======
                     b.Property<int>("Type")
                         .HasColumnType("int");
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
 
                     b.Property<int>("UsageLimit")
                         .HasColumnType("int");
@@ -632,8 +628,6 @@ namespace VendorEcommerceProject.Migrations
                     b.HasKey("OrderStatusId");
 
                     b.ToTable("OrderStatuses");
-<<<<<<< HEAD
-<<<<<<< HEAD
 
                     b.HasData(
                         new
@@ -666,10 +660,6 @@ namespace VendorEcommerceProject.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Cancelled"
                         });
-=======
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
-=======
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
                 });
 
             modelBuilder.Entity("VendorEcommerceProject.Models.OrdersAndCartTable.Orders", b =>

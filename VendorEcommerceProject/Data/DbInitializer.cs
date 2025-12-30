@@ -33,13 +33,7 @@ public static class DbInitializer
                 EmailConfirmed = true,
                 FullName = $"System Super Admin {i}",
                 IsActive = true
-<<<<<<< HEAD
-<<<<<<< HEAD
-                
-=======
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
-=======
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
+
             };
 
             var result = await userManager.CreateAsync(user, defaultPassword);

@@ -8,15 +8,7 @@ namespace VendorEcommerceProject.Controllers
 {
     [ApiController]
     [Route("api/user-roles")]
-<<<<<<< HEAD
-<<<<<<< HEAD
     [Authorize(Roles = "SuperAdmin,Admin")]
-=======
-    //[Authorize(Roles = "SuperAdmin,Admin")]
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
-=======
-    //[Authorize(Roles = "SuperAdmin,Admin")]
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
     public class UserRolesController : ControllerBase
     {
         private readonly AppDbContext _db;
