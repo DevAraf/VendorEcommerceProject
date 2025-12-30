@@ -15,8 +15,12 @@ namespace VendorEcommerceProject.Models.OrdersAndCartTable
         [Column(TypeName = "decimal(18,2)")]
         public decimal Discount { get; set; }
 
-        [Required, MaxLength(20)]
-        public string Type { get; set; } = "fixed";
+        [Required]
+        public CouponType Type { get; set; } = CouponType.Fixed;
+
+
+        //[Required, MaxLength(20)]
+        //public string Type { get; set; } = "fixed";
 
         public DateTime ValidFrom { get; set; } = DateTime.UtcNow;
         public DateTime ValidTo { get; set; } = DateTime.UtcNow.AddMonths(1);
@@ -26,4 +30,11 @@ namespace VendorEcommerceProject.Models.OrdersAndCartTable
 
         public IList<Orders> Orders { get; set; } = new List<Orders>();
     }
+
+    public enum CouponType
+    {
+        Fixed = 1,
+        Percentage = 2
+    }
+
 }
