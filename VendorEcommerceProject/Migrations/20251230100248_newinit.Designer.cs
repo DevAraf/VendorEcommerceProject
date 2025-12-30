@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VendorEcommerceProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251230100248_newinit")]
+    partial class newinit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,20 +265,8 @@ namespace VendorEcommerceProject.Migrations
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-=======
                     b.Property<int>("Type")
                         .HasColumnType("int");
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
-=======
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
 
                     b.Property<int>("UsageLimit")
                         .HasColumnType("int");
@@ -632,44 +623,6 @@ namespace VendorEcommerceProject.Migrations
                     b.HasKey("OrderStatusId");
 
                     b.ToTable("OrderStatuses");
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-                    b.HasData(
-                        new
-                        {
-                            OrderStatusId = 1L,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Pending"
-                        },
-                        new
-                        {
-                            OrderStatusId = 2L,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Processing"
-                        },
-                        new
-                        {
-                            OrderStatusId = 3L,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Shipped"
-                        },
-                        new
-                        {
-                            OrderStatusId = 4L,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Delivered"
-                        },
-                        new
-                        {
-                            OrderStatusId = 5L,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Cancelled"
-                        });
-=======
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
-=======
->>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
                 });
 
             modelBuilder.Entity("VendorEcommerceProject.Models.OrdersAndCartTable.Orders", b =>

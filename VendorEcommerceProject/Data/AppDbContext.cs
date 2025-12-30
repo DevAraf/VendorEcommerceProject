@@ -391,6 +391,8 @@ public class AppDbContext
             }
         );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
         modelBuilder.Entity<OrderStatus>().HasData(
             
             new OrderStatus { OrderStatusId = 1, Name = "Pending" },
@@ -401,6 +403,10 @@ public class AppDbContext
         );
 
 
+=======
+>>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
+=======
+>>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
         //// -------------------------------
         //// SEED 3 SUPER ADMINS
         //// -------------------------------

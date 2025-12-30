@@ -9,7 +9,13 @@ using System.Text;
 using System.Text.Json.Serialization;
 using VendorEcommerceProject.Data;
 using VendorEcommerceProject.Models.UserDetailsTable;
+<<<<<<< HEAD
+<<<<<<< HEAD
 //using VendorEcommerceProject.Dtos.Customer.Mapping;
+=======
+>>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
+=======
+>>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
 //using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +30,15 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
+<<<<<<< HEAD
+<<<<<<< HEAD
 //builder.Services.AddAutoMapper(typeof(CustomerMappingProfile));
+=======
+
+>>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
+=======
+
+>>>>>>> d7ac3668574d0ed4a9b4db5298cd76938fba2853
 // =====================================================
 // SWAGGER + JWT SUPPORT
 // =====================================================
