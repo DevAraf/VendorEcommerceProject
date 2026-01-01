@@ -47,6 +47,7 @@ public class AppDbContext
     // ===================== ORDER =====================
     public DbSet<Cart> Carts => Set<Cart>();
     public DbSet<CartItem> CartItems => Set<CartItem>();
+    public DbSet<CartItemVariant> CartItemVariants { get; set; } = null!;
     public DbSet<Coupon> Coupons => Set<Coupon>();
     public DbSet<Orders> Orders => Set<Orders>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
@@ -324,13 +325,30 @@ public class AppDbContext
         modelBuilder.Entity<Coupon>()
             .HasIndex(c => c.Code)
             .IsUnique();
-    
 
 
-    // -------------------------------
-    // SEED ROLES
-    // -------------------------------
-    modelBuilder.Entity<Role>().HasData(
+        //cart item variants (cart items ↔ product variants)
+
+
+        modelBuilder.Entity<CartItemVariant>()
+    .HasKey(x => new { x.CartItemId, x.ProductVariantId });
+
+        modelBuilder.Entity<CartItemVariant>()
+            .HasOne(x => x.CartItem)
+            .WithMany(c => c.CartItemVariants)
+            .HasForeignKey(x => x.CartItemId);
+
+        modelBuilder.Entity<CartItemVariant>()
+            .HasOne(x => x.ProductVariant)
+            .WithMany()
+            .HasForeignKey(x => x.ProductVariantId);
+
+
+
+        // -------------------------------
+        // SEED ROLES
+        // -------------------------------
+        modelBuilder.Entity<Role>().HasData(
            new Role
            {
                Id = 1,

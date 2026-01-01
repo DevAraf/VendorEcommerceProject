@@ -14,5 +14,6 @@
         public string VendorName { get; set; } = null!;
 
         public bool InStock { get; set; }
+        public List<ProductVariantDto> Variants { get; set; } = new();
     }
 }

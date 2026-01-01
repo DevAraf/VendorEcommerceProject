@@ -9,5 +9,9 @@
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal TotalPrice { get; set; }
+
+        public long? VariantId { get; set; }
+        public string Size { get; set; }
+        public string Color { get; set; }
     }
 }

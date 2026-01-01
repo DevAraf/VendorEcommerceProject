@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VendorEcommerceProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260101173556_AddCartItemVariant")]
+    partial class AddCartItemVariant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,21 +229,6 @@ namespace VendorEcommerceProject.Migrations
                     b.HasIndex("ProductVariantId");
 
                     b.ToTable("CartItems");
-                });
-
-            modelBuilder.Entity("VendorEcommerceProject.Models.OrdersAndCartTable.CartItemVariant", b =>
-                {
-                    b.Property<long>("CartItemId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProductVariantId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("CartItemId", "ProductVariantId");
-
-                    b.HasIndex("ProductVariantId");
-
-                    b.ToTable("CartItemVariants");
                 });
 
             modelBuilder.Entity("VendorEcommerceProject.Models.OrdersAndCartTable.Coupon", b =>
@@ -2077,25 +2065,6 @@ namespace VendorEcommerceProject.Migrations
                     b.Navigation("Variant");
                 });
 
-            modelBuilder.Entity("VendorEcommerceProject.Models.OrdersAndCartTable.CartItemVariant", b =>
-                {
-                    b.HasOne("VendorEcommerceProject.Models.OrdersAndCartTable.CartItem", "CartItem")
-                        .WithMany("CartItemVariants")
-                        .HasForeignKey("CartItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("VendorEcommerceProject.Models.ProductsTables.ProductVariant", "ProductVariant")
-                        .WithMany()
-                        .HasForeignKey("ProductVariantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CartItem");
-
-                    b.Navigation("ProductVariant");
-                });
-
             modelBuilder.Entity("VendorEcommerceProject.Models.OrdersAndCartTable.OrderItem", b =>
                 {
                     b.HasOne("VendorEcommerceProject.Models.OrdersAndCartTable.Orders", "Order")
@@ -2520,11 +2489,6 @@ namespace VendorEcommerceProject.Migrations
             modelBuilder.Entity("VendorEcommerceProject.Models.OrdersAndCartTable.Cart", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("VendorEcommerceProject.Models.OrdersAndCartTable.CartItem", b =>
-                {
-                    b.Navigation("CartItemVariants");
                 });
 
             modelBuilder.Entity("VendorEcommerceProject.Models.OrdersAndCartTable.Coupon", b =>

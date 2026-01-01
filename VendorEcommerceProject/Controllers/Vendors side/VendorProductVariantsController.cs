@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using VendorEcommerceProject.Dtos.Vendor.ProductVariants;
-using VendorEcommerceProject.Models.ProductsTables;
 using System.Security.Claims;
+using VendorEcommerceProject.Dtos.Vendor.ProductVariants;
+using VendorEcommerceProject.Dtos.Vendor.ProductVariants.VendorProductVariantBulk;
+using VendorEcommerceProject.Models.ProductsTables;
 
 [ApiController]
 [Route("api/vendor/product-variants")]
@@ -45,6 +46,70 @@ public class VendorProductVariantsController : ControllerBase
             .ToListAsync();
 
         return Ok(variants);
+    }
+
+
+    // ----------------------------------------
+    // POST: Variants of a product array type uopload
+    // ----------------------------------------
+
+    [HttpPost("bulk")]
+    public async Task<IActionResult> BulkCreate(VendorProductVariantBulkCreateDto dto)
+    {
+        long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        // 1️ Check product ownership
+        var product = await _db.Products
+            .Include(p => p.Vendor)
+            .FirstOrDefaultAsync(p =>
+                p.ProductId == dto.ProductId &&
+                p.Vendor.UserId == userId);
+
+        if (product == null)
+            return BadRequest("Invalid product");
+
+        if (dto.Variants == null || !dto.Variants.Any())
+            return BadRequest("No variants provided");
+
+        // 2️ Prevent duplicate values in request (XL, XL)
+        var duplicateValues = dto.Variants
+            .GroupBy(v => new { v.ProductAttributeId, v.Value })
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key.Value)
+            .ToList();
+
+        if (duplicateValues.Any())
+            return BadRequest($"Duplicate variant values found: {string.Join(", ", duplicateValues)}");
+
+        // 3️ Prevent duplicate variants already in DB
+        var existingVariants = await _db.ProductVariants
+            .Where(v => v.ProductId == dto.ProductId)
+            .Select(v => new { v.ProductAttributeId, v.Value })
+            .ToListAsync();
+
+        var conflicts = dto.Variants.Any(v =>
+            existingVariants.Any(e =>
+                e.ProductAttributeId == v.ProductAttributeId &&
+                e.Value == v.Value));
+
+        if (conflicts)
+            return BadRequest("One or more variants already exist");
+
+        // 4️ Create variants
+        var newVariants = dto.Variants.Select(v => new ProductVariant
+        {
+            ProductId = dto.ProductId,
+            ProductAttributeId = v.ProductAttributeId,
+            Value = v.Value,
+            AdditionalPrice = v.AdditionalPrice,
+            Quantity = v.Quantity,
+            CreatedAt = DateTime.UtcNow
+        }).ToList();
+
+        _db.ProductVariants.AddRange(newVariants);
+        await _db.SaveChangesAsync();
+
+        return Ok("Variants added successfully");
     }
 
     // ----------------------------------------

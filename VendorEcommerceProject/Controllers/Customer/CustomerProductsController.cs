@@ -80,6 +80,7 @@ public class CustomerProductsController : ControllerBase
         });
     }
 
+
     // ==========================
     // GET: Product Details
     // ==========================
@@ -123,6 +124,7 @@ public class CustomerProductsController : ControllerBase
         var product = await _db.Products
             .Include(p => p.Vendor)
             .Include(p => p.ProductImages)
+            .Include(p=>p.Variants)
             .Include(p => p.Status)
             .Where(p => p.ProductId == id && p.Status.Name == "Approved")
             .Select(p => new
@@ -138,7 +140,17 @@ public class CustomerProductsController : ControllerBase
                 Images = p.ProductImages
                     .OrderBy(i => i.ProductImageId)
                     .Select(i => i.ImageUrl)
-                    .ToList()
+                    .ToList(),
+                Variants = p.Variants.Select(v=>new ProductVariantDto
+                {
+                    VariantId=v.ProductVariantId,
+                    Size =v.Value,
+                    Color=v.Value,
+                    Stock=v.Quantity
+                }).ToList()
+
+              
+
             })
             .FirstOrDefaultAsync();
 
@@ -186,7 +198,8 @@ public class CustomerProductsController : ControllerBase
                 VendorId = product.VendorId,
                 VendorName = product.VendorName,
                 InStock = product.InStock,
-                Images = product.Images
+                Images = product.Images,
+                Variants=product.Variants
             },
             RelatedProducts = relatedProducts
         });
