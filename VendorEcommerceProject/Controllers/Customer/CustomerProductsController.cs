@@ -124,7 +124,8 @@ public class CustomerProductsController : ControllerBase
         var product = await _db.Products
             .Include(p => p.Vendor)
             .Include(p => p.ProductImages)
-            .Include(p=>p.Variants)
+            .Include(p => p.Variants)
+                .ThenInclude(v => v.Attribute)
             .Include(p => p.Status)
             .Where(p => p.ProductId == id && p.Status.Name == "Approved")
             .Select(p => new
@@ -137,20 +138,24 @@ public class CustomerProductsController : ControllerBase
                 VendorName = p.Vendor.Name,
                 InStock = p.Quantity > 0,
                 CategoryId = p.CategoryId,
+
                 Images = p.ProductImages
                     .OrderBy(i => i.ProductImageId)
                     .Select(i => i.ImageUrl)
                     .ToList(),
-                Variants = p.Variants.Select(v=>new ProductVariantDto
-                {
-                    VariantId=v.ProductVariantId,
-                    Size =v.Value,
-                    Color=v.Value,
-                    Stock=v.Quantity
-                }).ToList()
 
-              
-
+                // ✅ Dynamic attributes (Size / Color / GB / anything)
+                Variants = p.Variants
+                    .Select(v => new
+                    {
+                        VariantId = v.ProductVariantId,
+                        AttributeId = v.ProductAttributeId,
+                        Attribute = v.Attribute.Name,   
+                        Value = v.Value,                
+                        Stock = v.Quantity,
+                        AdditionalPrice = v.AdditionalPrice
+                    })
+                    .ToList()
             })
             .FirstOrDefaultAsync();
 
@@ -158,7 +163,7 @@ public class CustomerProductsController : ControllerBase
             return NotFound("Product not found or not approved");
 
         // ==========================
-        // Get related products (same category)
+        // Related products (same category)
         // ==========================
         var relatedProducts = await _db.Products
             .Include(p => p.ProductImages)
@@ -189,18 +194,7 @@ public class CustomerProductsController : ControllerBase
         // ==========================
         return Ok(new
         {
-            Product = new CustomerProductDetailsDto
-            {
-                ProductId = product.ProductId,
-                ProductName = product.ProductName,
-                Description = product.Description,
-                Price = product.Price,
-                VendorId = product.VendorId,
-                VendorName = product.VendorName,
-                InStock = product.InStock,
-                Images = product.Images,
-                Variants=product.Variants
-            },
+            Product = product,
             RelatedProducts = relatedProducts
         });
     }
