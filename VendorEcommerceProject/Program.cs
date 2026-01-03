@@ -138,5 +138,12 @@ app.MapControllers();
 // =====================================================
 await DbInitializer.SeedSuperAdminsAsync(app.Services);
 
+app.UseCors(Policy =>
+{
+    Policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+
+
+
+});
 
 app.Run();
