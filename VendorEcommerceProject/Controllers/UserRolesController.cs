@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VendorEcommerceProject.Dtos.UserRoles;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.UserDetailsTable;
 
 namespace VendorEcommerceProject.Controllers
@@ -25,16 +26,16 @@ namespace VendorEcommerceProject.Controllers
         public async Task<IActionResult> AddRole(AssignRoleDto dto)
         {
             var user = await _db.Users.FindAsync(dto.UserId);
-            if (user == null) return NotFound("User not found");
+            if (user == null) return NotFound("User not found".SendResponse());
 
             var role = await _db.Roles.FirstOrDefaultAsync(r => r.Name == dto.RoleName);
-            if (role == null) return NotFound("Role not found");
+            if (role == null) return NotFound("Role not found".SendResponse());
 
             bool alreadyAssigned = await _db.UserRoleAssignments
                 .AnyAsync(x => x.UserId == dto.UserId && x.RoleId == role.Id);
 
             if (alreadyAssigned)
-                return BadRequest("User already has this role");
+                return BadRequest("User already has this role".SendResponse());
 
             _db.UserRoleAssignments.Add(new UserRoleAssignment
             {
@@ -43,7 +44,7 @@ namespace VendorEcommerceProject.Controllers
             });
 
             await _db.SaveChangesAsync();
-            return Ok("Role added successfully");
+            return Ok("Role added successfully".SendResponse());
         }
 
         // =====================================================
@@ -56,7 +57,7 @@ namespace VendorEcommerceProject.Controllers
             var newRole = await _db.Roles.FirstOrDefaultAsync(r => r.Name == dto.NewRole);
 
             if (oldRole == null || newRole == null)
-                return NotFound("Role not found");
+                return NotFound("Role not found".SendResponse());
 
             var assignment = await _db.UserRoleAssignments
                 .FirstOrDefaultAsync(x =>
@@ -64,7 +65,7 @@ namespace VendorEcommerceProject.Controllers
                     x.RoleId == oldRole.Id);
 
             if (assignment == null)
-                return BadRequest("User does not have the old role");
+                return BadRequest("User does not have the old role".SendResponse());
 
             _db.UserRoleAssignments.Remove(assignment);
 
@@ -75,7 +76,7 @@ namespace VendorEcommerceProject.Controllers
             });
 
             await _db.SaveChangesAsync();
-            return Ok("Role changed successfully");
+            return Ok("Role changed successfully".SendResponse());
         }
 
         // =====================================================
@@ -85,7 +86,7 @@ namespace VendorEcommerceProject.Controllers
         public async Task<IActionResult> RemoveRole(AssignRoleDto dto)
         {
             var role = await _db.Roles.FirstOrDefaultAsync(r => r.Name == dto.RoleName);
-            if (role == null) return NotFound("Role not found");
+            if (role == null) return NotFound("Role not found".SendResponse());
 
             var assignment = await _db.UserRoleAssignments
                 .FirstOrDefaultAsync(x =>
@@ -93,12 +94,12 @@ namespace VendorEcommerceProject.Controllers
                     x.RoleId == role.Id);
 
             if (assignment == null)
-                return BadRequest("User does not have this role");
+                return BadRequest("User does not have this role".SendResponse());
 
             _db.UserRoleAssignments.Remove(assignment);
             await _db.SaveChangesAsync();
 
-            return Ok("Role removed successfully");
+            return Ok("Role removed successfully".SendResponse());
         }
     }
 }

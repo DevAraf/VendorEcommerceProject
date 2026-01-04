@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VendorEcommerceProject.Dtos.Admin.ProductsStatusDtos;
+using VendorEcommerceProject.Helpers;
 
 [ApiController]
 [Route("api/admin/products")]
@@ -61,7 +62,7 @@ public class AdminProductsStatusController : ControllerBase
             .FirstOrDefault();
 
         if (product == null)
-            return NotFound("Product not found");
+            return NotFound("Product not found".SendResponse());
 
         return Ok(product);
     }
@@ -74,18 +75,18 @@ public class AdminProductsStatusController : ControllerBase
     {
         var product = _db.Products.FirstOrDefault(p => p.ProductId == dto.ProductId);
         if (product == null)
-            return NotFound("Product not found");
+            return NotFound("Product not found".SendResponse());
 
         bool statusExists = _db.ProductStatuses
             .Any(s => s.ProductStatusId == dto.ProductStatusId);
 
         if (!statusExists)
-            return BadRequest("Invalid product status");
+            return BadRequest("Invalid product status".SendResponse());
 
         product.ProductStatusId = dto.ProductStatusId;
         product.ModifiedAt = DateTime.UtcNow;
 
         _db.SaveChanges();
-        return Ok("Product status updated successfully");
+        return Ok("Product status updated successfully".SendResponse());
     }
 }

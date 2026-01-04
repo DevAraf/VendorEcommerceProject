@@ -106,7 +106,7 @@ public class CustomerDashboardController : ControllerBase
                     .OrderBy(pi => pi.ProductImageId)
                     .Select(pi => pi.ImageUrl)
                     .FirstOrDefault(),
-                Quantity = 0 // wishlist এ quantity নেই
+                Quantity = 0 // wishlist have no quantity
             })
             .ToListAsync();
 

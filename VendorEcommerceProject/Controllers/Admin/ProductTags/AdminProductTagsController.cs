@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VendorEcommerceProject.Dtos.Admin.ProductTags;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.ProductsTables;
 
 [ApiController]
@@ -36,7 +37,7 @@ public class AdminProductTagsController : ControllerBase
     public async Task<IActionResult> Create(AdminProductTagCreateDto dto)
     {
         if (await _db.ProductTags.AnyAsync(t => t.Name == dto.Name))
-            return BadRequest("Tag already exists");
+            return BadRequest("Tag already exists".SendResponse());
 
         var tag = new ProductTag
         {
@@ -47,7 +48,7 @@ public class AdminProductTagsController : ControllerBase
         _db.ProductTags.Add(tag);
         await _db.SaveChangesAsync();
 
-        return Ok("Tag created");
+        return Ok("Tag created".SendResponse());
     }
 
     // DELETE: delete tag (safe)
@@ -58,7 +59,7 @@ public class AdminProductTagsController : ControllerBase
             .AnyAsync(p => p.ProductTags.Any(t => t.ProductTagId == id));
 
         if (usedByProduct)
-            return BadRequest("Tag is used by products");
+            return BadRequest("Tag is used by products".SendResponse());
 
         var tag = await _db.ProductTags.FindAsync(id);
         if (tag == null)
@@ -67,6 +68,6 @@ public class AdminProductTagsController : ControllerBase
         _db.ProductTags.Remove(tag);
         await _db.SaveChangesAsync();
 
-        return Ok("Tag deleted");
+        return Ok("Tag deleted".SendResponse());
     }
 }

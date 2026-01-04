@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using VendorEcommerceProject.Dtos.Vendor.Dashboard;
+using VendorEcommerceProject.Helpers;
 
 namespace VendorEcommerceProject.Controllers.Vendorside
 {
@@ -32,7 +33,7 @@ namespace VendorEcommerceProject.Controllers.Vendorside
                 .FirstOrDefaultAsync();
 
             if (vendorId == 0)
-                return BadRequest("Vendor account not found");
+                return BadRequest("Vendor account not found".SendResponse());
 
             int totalProducts = await _db.Products
                 .CountAsync(p => p.VendorId == vendorId && p.DeletedAt == null);
@@ -75,7 +76,7 @@ namespace VendorEcommerceProject.Controllers.Vendorside
                 .FirstOrDefaultAsync();
 
             if (vendorId == 0)
-                return BadRequest("Vendor account not found");
+                return BadRequest("Vendor account not found".SendResponse());
 
             var orders = await _db.OrderItems
                 .Where(oi => oi.Product.VendorId == vendorId)
@@ -108,7 +109,7 @@ namespace VendorEcommerceProject.Controllers.Vendorside
                 .FirstOrDefaultAsync();
 
             if (vendorId == 0)
-                return BadRequest("Vendor account not found");
+                return BadRequest("Vendor account not found".SendResponse());
 
             int approved = await _db.Products
                 .CountAsync(p => p.VendorId == vendorId && p.Status.Name == "Approved");

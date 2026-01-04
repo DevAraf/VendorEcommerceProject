@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using VendorEcommerceProject.Dtos.Customer.Orders;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.OrdersAndCartTable;
 using VendorEcommerceProject.Models.UserDetailsTable;
 
@@ -62,7 +63,7 @@ public class CustomerOrdersController : ControllerBase
             .FirstOrDefaultAsync(c => c.UserId == userId);
 
         if (cart == null || !cart.Items.Any())
-            return BadRequest("Cart is empty");
+            return BadRequest("Cart is empty".SendResponse());
 
         // 2. Save new shipping address
         if (dto.SetAsDefault)
@@ -95,7 +96,7 @@ public class CustomerOrdersController : ControllerBase
             .FirstOrDefaultAsync();
 
         if (pendingStatusId == 0)
-            return BadRequest("Pending order status not found. Contact admin.");
+            return BadRequest("Pending order status not found. Contact admin.".SendResponse());
 
         // 4. Create order
         var order = new Orders

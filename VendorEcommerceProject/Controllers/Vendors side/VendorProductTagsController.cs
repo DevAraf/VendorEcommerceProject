@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using VendorEcommerceProject.Dtos.Vendor.ProductTags;
-using VendorEcommerceProject.Models.ProductsTables;
 using System.Security.Claims;
+using VendorEcommerceProject.Dtos.Vendor.ProductTags;
+using VendorEcommerceProject.Helpers;
+using VendorEcommerceProject.Models.ProductsTables;
 
 [ApiController]
 [Route("api/vendor/product-tags")]
@@ -33,7 +34,7 @@ public class VendorProductTagsController : ControllerBase
                 p.Vendor.UserId == userId);
 
         if (product == null)
-            return NotFound("Product not found");
+            return NotFound("Product not found".SendResponse());
 
         var tags = product.ProductTags
             .Select(t => new VendorProductTagListDto
@@ -62,7 +63,7 @@ public class VendorProductTagsController : ControllerBase
                 p.Vendor.UserId == userId);
 
         if (product == null)
-            return BadRequest("Invalid product");
+            return BadRequest("Invalid product".SendResponse());
 
         var tags = await _db.ProductTags
             .Where(t => dto.ProductTagIds.Contains(t.ProductTagId))
@@ -75,6 +76,6 @@ public class VendorProductTagsController : ControllerBase
         product.ModifiedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync();
 
-        return Ok("Tags assigned successfully");
+        return Ok("Tags assigned successfully".SendResponse());
     }
 }

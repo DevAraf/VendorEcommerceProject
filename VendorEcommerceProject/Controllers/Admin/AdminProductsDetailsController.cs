@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VendorEcommerceProject.Dtos.Admin.Products;
+using VendorEcommerceProject.Helpers;
 
 [ApiController]
 [Route("api/admin/products")]
@@ -32,7 +33,7 @@ public class AdminProductsDetailsController : ControllerBase
             .FirstOrDefaultAsync(p => p.ProductId == id);
 
         if (product == null)
-            return NotFound("Product not found");
+            return NotFound("Product not found".SendResponse());
 
         var dto = new AdminProductDetailsDto
         {

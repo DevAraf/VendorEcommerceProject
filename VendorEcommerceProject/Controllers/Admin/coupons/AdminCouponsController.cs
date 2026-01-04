@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VendorEcommerceProject.Dtos.Admin.Coupons;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.OrdersAndCartTable;
 
 [ApiController]
@@ -45,7 +46,7 @@ public class AdminCouponsController : ControllerBase
     public async Task<IActionResult> Create(AdminCouponCreateDto dto)
     {
         if (await _db.Coupons.AnyAsync(c => c.Code == dto.Code))
-            return BadRequest("Coupon code already exists");
+            return BadRequest("Coupon code already exists".SendResponse());
 
         var coupon = new Coupon
         {
@@ -61,7 +62,7 @@ public class AdminCouponsController : ControllerBase
         _db.Coupons.Add(coupon);
         await _db.SaveChangesAsync();
 
-        return Ok("Coupon created successfully");
+        return Ok("Coupon created successfully".SendResponse());
     }
 
     // ----------------------------------------
@@ -74,7 +75,7 @@ public class AdminCouponsController : ControllerBase
             .FirstOrDefaultAsync(c => c.CouponId == dto.CouponId);
 
         if (coupon == null)
-            return NotFound("Coupon not found");
+            return NotFound("Coupon not found".SendResponse());
 
         coupon.Discount = dto.Discount;
         coupon.Type = dto.Type;
@@ -84,7 +85,7 @@ public class AdminCouponsController : ControllerBase
         coupon.ModifiedAt = DateTime.UtcNow;
 
         await _db.SaveChangesAsync();
-        return Ok("Coupon updated successfully");
+        return Ok("Coupon updated successfully".SendResponse());
     }
 
     // ----------------------------------------
@@ -97,7 +98,7 @@ public class AdminCouponsController : ControllerBase
             .AnyAsync(o => o.CouponId == id);
 
         if (usedInOrders)
-            return BadRequest("Coupon already used in orders");
+            return BadRequest("Coupon already used in orders".SendResponse());
 
         var coupon = await _db.Coupons.FindAsync(id);
         if (coupon == null)
@@ -106,6 +107,6 @@ public class AdminCouponsController : ControllerBase
         _db.Coupons.Remove(coupon);
         await _db.SaveChangesAsync();
 
-        return Ok("Coupon deleted");
+        return Ok("Coupon deleted".SendResponse());
     }
 }

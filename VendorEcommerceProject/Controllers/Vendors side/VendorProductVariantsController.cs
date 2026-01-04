@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using VendorEcommerceProject.Dtos.Vendor.ProductVariants;
 using VendorEcommerceProject.Dtos.Vendor.ProductVariants.VendorProductVariantBulk;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.ProductsTables;
 
 [ApiController]
@@ -31,7 +32,7 @@ public class VendorProductVariantsController : ControllerBase
             .FirstOrDefaultAsync(p => p.ProductId == productId && p.Vendor.UserId == userId);
 
         if (product == null)
-            return NotFound("Product not found");
+            return NotFound("Product not found".SendResponse());
 
         var variants = await _db.ProductVariants
             .Where(v => v.ProductId == productId)
@@ -66,10 +67,10 @@ public class VendorProductVariantsController : ControllerBase
                 p.Vendor.UserId == userId);
 
         if (product == null)
-            return BadRequest("Invalid product");
+            return BadRequest("Invalid product".SendResponse());
 
         if (dto.Variants == null || !dto.Variants.Any())
-            return BadRequest("No variants provided");
+            return BadRequest("No variants provided".SendResponse());
 
         // 2️ Prevent duplicate values in request (XL, XL)
         var duplicateValues = dto.Variants
@@ -79,7 +80,7 @@ public class VendorProductVariantsController : ControllerBase
             .ToList();
 
         if (duplicateValues.Any())
-            return BadRequest($"Duplicate variant values found: {string.Join(", ", duplicateValues)}");
+            return BadRequest($"Duplicate variant values found: {string.Join(", ", duplicateValues)}".SendResponse());
 
         // 3️ Prevent duplicate variants already in DB
         var existingVariants = await _db.ProductVariants
@@ -93,7 +94,7 @@ public class VendorProductVariantsController : ControllerBase
                 e.Value == v.Value));
 
         if (conflicts)
-            return BadRequest("One or more variants already exist");
+            return BadRequest("One or more variants already exist".SendResponse());
 
         // 4️ Create variants
         var newVariants = dto.Variants.Select(v => new ProductVariant
@@ -109,7 +110,7 @@ public class VendorProductVariantsController : ControllerBase
         _db.ProductVariants.AddRange(newVariants);
         await _db.SaveChangesAsync();
 
-        return Ok("Variants added successfully");
+        return Ok("Variants added successfully".SendResponse());
     }
 
     // ----------------------------------------
@@ -127,7 +128,7 @@ public class VendorProductVariantsController : ControllerBase
                 p.Vendor.UserId == userId);
 
         if (product == null)
-            return BadRequest("Invalid product");
+            return BadRequest("Invalid product".SendResponse());
 
         var variant = new ProductVariant
         {
@@ -142,7 +143,7 @@ public class VendorProductVariantsController : ControllerBase
         _db.ProductVariants.Add(variant);
         await _db.SaveChangesAsync();
 
-        return Ok("Variant added successfully");
+        return Ok("Variant added successfully".SendResponse());
     }
 
     // ----------------------------------------
@@ -161,7 +162,7 @@ public class VendorProductVariantsController : ControllerBase
                 v.Product.Vendor.UserId == userId);
 
         if (variant == null)
-            return NotFound("Variant not found");
+            return NotFound("Variant not found".SendResponse());
 
         variant.Value = dto.Value;
         variant.AdditionalPrice = dto.AdditionalPrice;
@@ -169,7 +170,7 @@ public class VendorProductVariantsController : ControllerBase
         variant.ModifiedAt = DateTime.UtcNow;
 
         await _db.SaveChangesAsync();
-        return Ok("Variant updated");
+        return Ok("Variant updated".SendResponse());
     }
 
     // ----------------------------------------
@@ -193,6 +194,6 @@ public class VendorProductVariantsController : ControllerBase
         _db.ProductVariants.Remove(variant);
         await _db.SaveChangesAsync();
 
-        return Ok("Variant deleted");
+        return Ok("Variant deleted".SendResponse());
     }
 }

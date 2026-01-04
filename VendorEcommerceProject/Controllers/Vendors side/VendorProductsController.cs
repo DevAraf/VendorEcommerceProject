@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using VendorEcommerceProject.Dtos.Vendor.Products;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.ProductsTables;
 using VendorEcommerceProject.Models.VendorsTable;
-using System.Security.Claims;
 
 [ApiController]
 [Route("api/vendor/products")]
@@ -62,7 +63,7 @@ public class VendorProductsController : ControllerBase
         long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         var vendor = await _db.Vendors.FirstOrDefaultAsync(v => v.UserId == userId);
-        if (vendor == null) return BadRequest("Vendor account not found");
+        if (vendor == null) return BadRequest("Vendor account not found".SendResponse());
 
         var pendingStatusId = await _db.ProductStatuses
             .Where(s => s.Name == "Pending")
@@ -87,7 +88,7 @@ public class VendorProductsController : ControllerBase
 
         await SaveImages(product.ProductId, dto.Images);
 
-        return Ok("Product created and sent for admin approval");
+        return Ok("Product created and sent for admin approval".SendResponse());
     }
 
     // --------------------------------------------------
@@ -103,7 +104,7 @@ public class VendorProductsController : ControllerBase
             .Include(p => p.Vendor)
             .FirstOrDefaultAsync(p => p.ProductId == id && p.Vendor.UserId == userId);
 
-        if (product == null) return NotFound("Product not found");
+        if (product == null) return NotFound("Product not found".SendResponse());
 
         product.ProductsName = dto.ProductsName;
         product.Description = dto.Description;
@@ -132,7 +133,7 @@ public class VendorProductsController : ControllerBase
         await SaveImages(product.ProductId, dto.ImagesToAdd);
         await _db.SaveChangesAsync();
 
-        return Ok("Product updated and re-sent for approval");
+        return Ok("Product updated and re-sent for approval".SendResponse());
     }
 
     // --------------------------------------------------
@@ -153,7 +154,7 @@ public class VendorProductsController : ControllerBase
         product.DeletedBy = userId.ToString();
 
         await _db.SaveChangesAsync();
-        return Ok("Product removed from vendor listing");
+        return Ok("Product removed from vendor listing".SendResponse());
     }
 
     // --------------------------------------------------

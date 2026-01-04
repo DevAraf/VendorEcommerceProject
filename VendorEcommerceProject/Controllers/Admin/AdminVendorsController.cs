@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VendorEcommerceProject.Dtos.Admin.Users;
+using VendorEcommerceProject.Helpers;
 
 namespace VendorEcommerceProject.Controllers.Admin
 {
@@ -50,12 +51,12 @@ namespace VendorEcommerceProject.Controllers.Admin
         {
             var user = await _db.Users.FindAsync(dto.UserId);
             if (user == null)
-                return NotFound("User not found");
+                return NotFound("User not found".SendResponse());
 
             user.IsActive = dto.IsActive;
 
             await _db.SaveChangesAsync();
-            return Ok("Vendor status updated");
+            return Ok("Vendor status updated".SendResponse());
         }
     }
 }

@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using VendorEcommerceProject.Dtos.Auth;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.UserDetailsTable;
 using VendorEcommerceProject.Models.VendorsTable;
 
@@ -47,14 +48,14 @@ namespace VendorEcommerceProject.Controllers
                     u.UserName == dto.EmailOrUsername);
 
             if (user == null)
-                return Unauthorized("Invalid credentials");
+                return Unauthorized("Invalid credentials".SendResponse());
 
             if (!user.IsActive)
-                return Unauthorized("Account is disabled");
+                return Unauthorized("Account is disabled".SendResponse());
 
             var validPassword = await _userManager.CheckPasswordAsync(user, dto.Password);
             if (!validPassword)
-                return Unauthorized("Invalid credentials");
+                return Unauthorized("Invalid credentials".SendResponse());
 
             var roles = user.UserRoles.Select(r => r.Role.Name!).ToList();
 
@@ -100,7 +101,7 @@ namespace VendorEcommerceProject.Controllers
             });
 
             await _db.SaveChangesAsync();
-            return Ok("Customer registered successfully");
+            return Ok("Customer registered successfully".SendResponse());
         }
 
         // =====================================================
@@ -139,7 +140,7 @@ namespace VendorEcommerceProject.Controllers
             });
 
             await _db.SaveChangesAsync();
-            return Ok("Vendor registered successfully");
+            return Ok("Vendor registered successfully".SendResponse());
         }
 
         // =====================================================
@@ -170,7 +171,7 @@ namespace VendorEcommerceProject.Controllers
             });
 
             await _db.SaveChangesAsync();
-            return Ok("Admin registered successfully");
+            return Ok("Admin registered successfully".SendResponse());
         }
 
         // =====================================================
@@ -229,10 +230,10 @@ namespace VendorEcommerceProject.Controllers
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null)
-                return Unauthorized("UserId claim missing in token");
+                return Unauthorized("UserId claim missing in token".SendResponse());
 
             if (!long.TryParse(userIdClaim.Value, out var userId))
-                return Unauthorized("Invalid UserId in token");
+                return Unauthorized("Invalid UserId in token".SendResponse());
 
             // LOAD USER WITH ROLES
             var user = await _db.Users
@@ -241,7 +242,7 @@ namespace VendorEcommerceProject.Controllers
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
-                return Unauthorized("User not found");
+                return Unauthorized("User not found".SendResponse());
 
             //CHECK IF ALREADY VENDOR
 
@@ -249,14 +250,14 @@ namespace VendorEcommerceProject.Controllers
                 .Any(r => r.Role.Name == "Vendor");
 
             if (isAlreadyVendor)
-                return BadRequest("User is already a vendor");
+                return BadRequest("User is already a vendor".SendResponse());
 
             //ADD VENDOR ROLE
             var vendorRole = await _db.Roles
                 .FirstOrDefaultAsync(r => r.Name == "Vendor");
 
             if (vendorRole == null)
-                return StatusCode(500, "Vendor role not found");
+                return StatusCode(500, "Vendor role not found".SendResponse());
 
             _db.UserRoleAssignments.Add(new UserRoleAssignment
             {
@@ -295,7 +296,7 @@ namespace VendorEcommerceProject.Controllers
             //SAVE CHANGES
             await _db.SaveChangesAsync();
 
-            return Ok("You are now a vendor");
+            return Ok("You are now a vendor".SendResponse());
         }
 
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models;
 using VendorEcommerceProject.Models.UserDetailsTable;
 
@@ -47,11 +48,11 @@ public class CustomerWishlistController : ControllerBase
         long userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         var exists = await _db.Wishlists.AnyAsync(w => w.UserId == userId && w.ProductId == request.ProductId);
-        if (exists) return BadRequest("Already in wishlist");
+        if (exists) return BadRequest("Already in wishlist".SendResponse());
 
         _db.Wishlists.Add(new Wishlist { UserId = userId, ProductId = request.ProductId });
         await _db.SaveChangesAsync();
-        return Ok("Product added to wishlist");
+        return Ok("Product added to wishlist".SendResponse());
     }
 
     // DELETE remove from wishlist
@@ -65,7 +66,7 @@ public class CustomerWishlistController : ControllerBase
 
         _db.Wishlists.Remove(wishlist);
         await _db.SaveChangesAsync();
-        return Ok("Product removed from wishlist");
+        return Ok("Product removed from wishlist".SendResponse());
     }
 }
 

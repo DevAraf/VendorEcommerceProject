@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VendorEcommerceProject.Dtos.Customer.Products;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.ProductsTables;
 
 [ApiController]
@@ -160,7 +161,7 @@ public class CustomerProductsController : ControllerBase
             .FirstOrDefaultAsync();
 
         if (product == null)
-            return NotFound("Product not found or not approved");
+            return NotFound("Product not found or not approved".SendResponse());
 
         // ==========================
         // Related products (same category)

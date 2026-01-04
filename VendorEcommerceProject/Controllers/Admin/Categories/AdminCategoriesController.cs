@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VendorEcommerceProject.Dtos.Admin.Categories;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.ProductsTables;
 
 [ApiController]
@@ -75,11 +76,11 @@ public class AdminCategoriesController : ControllerBase
     public IActionResult Create(AdminCategoryCreateDto dto)
     {
         if (_db.ProductCategories.Any(c => c.Name == dto.Name))
-            return BadRequest("Category already exists");
+            return BadRequest("Category already exists".SendResponse());
 
         if (dto.ParentId.HasValue &&
             !_db.ProductCategories.Any(c => c.ProductCategoryId == dto.ParentId))
-            return BadRequest("Parent category not found");
+            return BadRequest("Parent category not found".SendResponse());
 
         var category = new ProductCategory
         {
@@ -103,7 +104,7 @@ public class AdminCategoriesController : ControllerBase
             .FirstOrDefault(c => c.ProductCategoryId == dto.ProductCategoryId);
 
         if (category == null)
-            return NotFound("Category not found");
+            return NotFound("Category not found".SendResponse());
 
         category.Name = dto.Name;
         category.ParentId = dto.ParentId;
@@ -127,12 +128,12 @@ public class AdminCategoriesController : ControllerBase
         // ❌ If category has child categories
         bool hasChildren = _db.ProductCategories.Any(c => c.ParentId == id);
         if (hasChildren)
-            return BadRequest("Cannot delete category with child categories");
+            return BadRequest("Cannot delete category with child categories".SendResponse());
 
         // ❌ If category is used by products
         bool usedByProduct = _db.Products.Any(p => p.CategoryId == id);
         if (usedByProduct)
-            return BadRequest("Cannot delete category used by products");
+            return BadRequest("Cannot delete category used by products".SendResponse());
 
         _db.ProductCategories.Remove(category);
         _db.SaveChanges();

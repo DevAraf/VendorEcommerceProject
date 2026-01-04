@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.UserDetailsTable;
 
 
@@ -38,7 +39,7 @@ public class CustomerProfileController : ControllerBase
             .FirstOrDefaultAsync();
 
         if (profile == null)
-            return NotFound("Customer profile not found");
+            return NotFound("Customer profile not found".SendResponse());
 
         // Addresses
         var addresses = await _db.UserAddresses

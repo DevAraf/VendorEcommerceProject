@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using VendorEcommerceProject.Dtos.Customer.Cart;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.OrdersAndCartTable;
 
 [ApiController]
@@ -130,7 +131,7 @@ public class CustomerCartController : ControllerBase
                     );
 
                 if (variant == null)
-                    return BadRequest($"Variant {sel.VariantId} (Attribute {sel.AttributeId}) out of stock");
+                    return BadRequest($"Variant {sel.VariantId} (Attribute {sel.AttributeId}) out of stock".SendResponse());
 
                 _db.CartItemVariants.Add(new CartItemVariant
                 {
@@ -141,7 +142,7 @@ public class CustomerCartController : ControllerBase
         }
 
         await _db.SaveChangesAsync();
-        return Ok("Product(s) added to cart successfully");
+        return Ok("Product(s) added to cart successfully".SendResponse());
     }
 
 
@@ -155,7 +156,7 @@ public class CustomerCartController : ControllerBase
 
         cartItem.Quantity = request.Quantity;
         await _db.SaveChangesAsync();
-        return Ok("Cart item updated");
+        return Ok("Cart item updated".SendResponse());
     }
 
     // DELETE remove product from cart
@@ -171,7 +172,7 @@ public class CustomerCartController : ControllerBase
         _db.CartItemVariants.RemoveRange(cartItem.CartItemVariants);
         _db.CartItems.Remove(cartItem);
         await _db.SaveChangesAsync();
-        return Ok("Product removed from cart");
+        return Ok("Product removed from cart".SendResponse());
     }
 }
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VendorEcommerceProject.Dtos.Admin.ProductAttributes;
+using VendorEcommerceProject.Helpers;
 using VendorEcommerceProject.Models.ProductsTables;
 
 [ApiController]
@@ -39,7 +40,7 @@ public class AdminProductAttributesController : ControllerBase
     public async Task<IActionResult> Create(AdminProductAttributeCreateDto dto)
     {
         if (await _db.ProductAttributes.AnyAsync(a => a.Name == dto.Name))
-            return BadRequest("Attribute already exists");
+            return BadRequest("Attribute already exists".SendResponse());
 
         var attribute = new ProductAttribute
         {
@@ -52,7 +53,7 @@ public class AdminProductAttributesController : ControllerBase
         _db.ProductAttributes.Add(attribute);
         await _db.SaveChangesAsync();
 
-        return Ok("Attribute created successfully");
+        return Ok("Attribute created successfully".SendResponse());
     }
 
     // PUT: update attribute
@@ -63,7 +64,7 @@ public class AdminProductAttributesController : ControllerBase
             .FirstOrDefaultAsync(a => a.ProductAttributeId == dto.ProductAttributeId);
 
         if (attribute == null)
-            return NotFound("Attribute not found");
+            return NotFound("Attribute not found".SendResponse());
 
         attribute.Name = dto.Name;
         attribute.Description = dto.Description;
@@ -71,7 +72,7 @@ public class AdminProductAttributesController : ControllerBase
         attribute.ModifiedAt = DateTime.UtcNow;
 
         await _db.SaveChangesAsync();
-        return Ok("Attribute updated");
+        return Ok("Attribute updated".SendResponse());
     }
 
     // DELETE: safe delete
@@ -82,7 +83,7 @@ public class AdminProductAttributesController : ControllerBase
             .AnyAsync(v => v.ProductAttributeId == id);
 
         if (usedByVariant)
-            return BadRequest("Attribute is used by variants");
+            return BadRequest("Attribute is used by variants".SendResponse());
 
         var attribute = await _db.ProductAttributes.FindAsync(id);
         if (attribute == null)
@@ -91,6 +92,6 @@ public class AdminProductAttributesController : ControllerBase
         _db.ProductAttributes.Remove(attribute);
         await _db.SaveChangesAsync();
 
-        return Ok("Attribute deleted");
+        return Ok("Attribute deleted".SendResponse());
     }
 }
