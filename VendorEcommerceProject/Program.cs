@@ -127,7 +127,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 // ORDER IS CRITICAL
 app.UseAuthentication();   // FIRST
 app.UseAuthorization();

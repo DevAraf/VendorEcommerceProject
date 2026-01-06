@@ -35,6 +35,9 @@ public class AdminProductsDetailsController : ControllerBase
         if (product == null)
             return NotFound("Product not found".SendResponse());
 
+        var baseUri = $"{Request.Scheme}://{Request.Host}";
+
+
         var dto = new AdminProductDetailsDto
         {
             ProductId = product.ProductId,
@@ -50,11 +53,13 @@ public class AdminProductsDetailsController : ControllerBase
 
             CategoryName = product.Category.Name,
 
+
+
             Images = product.ProductImages
                 .Select(i => new AdminProductImageDto
                 {
                     ProductImageId = i.ProductImageId,
-                    ImageUrl = i.ImageUrl
+                    ImageUrl = $"{baseUri}{i.ImageUrl}"
                 })
                 .ToList(),
 
